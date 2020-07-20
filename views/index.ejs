@@ -136,7 +136,8 @@
                     <%= equities_data[index][1] %>
                 </p>
                 <div> 
-                    <% if(equities_data[index][3] == "+"){ %>
+                    <% console.log(equities_data[index][3].substring(1)) %>
+                    <% if(equities_data[index][3][0] == "+"){ %>
                         <h3 class="text-success"><%= equities_data[index][2] %></h3>
                         <svg width="40" height="50">
                             <polygon fill="green" stroke-width="2"
