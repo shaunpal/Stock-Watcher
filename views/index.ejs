@@ -1,0 +1,288 @@
+<html>
+<head>
+<title>Stock Watcher</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+<link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+<div class="main">
+
+<div class="text-center"> 
+    <h1 class="text-center">Stock Watcher</h1>
+    <form id="stock-form" name="stock-form" method="GET" action="/search">
+        <div class="input-group" style="width: 300px; margin-right: auto; margin-left: auto;">
+            <input class="form-control" type="text" name="name" placeholder="Enter a symbol or company..." />
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="submit" id="inputGroupFileAddon04" >Get</button>
+            </div>
+        </div>    
+    </form> 
+    <% if(rejected.length != 0){ %>
+        <p class="text-danger">
+            <%= rejected[0]+ " not found." %> 
+        </p>
+    <% } else if(duplicated.length != 0) { %>  
+        <p class="text-danger">
+            <%= duplicated[0]+ " is already watched" %> 
+        </p>
+    <% } %>
+</div>
+<div class="grid-container">
+    <% indices.forEach(function(ele, index){ %>
+        <div class="grid-item card">
+            <div class="text-center mt-3">
+                <h3>
+                    <%= data[index][0].split("-")[0] %>
+                </h3>    
+                <p class="side-note">
+                    <%= data[index][0] %>
+                </p>
+                <div> 
+                    <% if(data[index][2][0] == "+"){ %>
+                        <h3 class="text-success"><%= data[index][1] %></h3>
+                        <svg width="40" height="50">
+                            <polygon fill="green" stroke-width="2"
+                                points="05,30
+                                        15,10
+                                        25,30" />
+                        </svg>
+                        <h6 class="text-success"><%= data[index][2] %></h6>
+                    <% } else { %> 
+                        <h3 class="text-danger"><%= data[index][1] %></h3>
+                        <div class="triangle-down"></div>
+                        <h6 class="text-danger"><%= data[index][2] %></h6>
+                    <% } %>
+                    <p class="at_close">
+                        <%= data[index][3] %>
+                    </p>
+                </div>     
+            </div>
+            <div class="grid-container-inner">
+                <div class="grid-item-inner">
+                    <p class="previous-close">
+                        <b>
+                        <%= data[index][4] %>
+                        </b>   
+                    </p>
+                    <p>
+                        <%= data[index][5] %>
+                    </p>
+                </div>
+                <div class="grid-item-inner">
+                    <p class="open">
+                        <b>
+                        <%= data[index][6] %>
+                        </b>   
+                    </p>
+                    <p class="open-value">
+                        <%= data[index][7] %>
+                    </p>
+                </div>
+                <div class="grid-item-inner">
+                    <p class="day-range">
+                        <b>
+                        <%= data[index][10] %>
+                        </b>   
+                    </p>
+                    <p class="at_close">
+                        <%= data[index][11] %>
+                    </p>
+                </div>
+                <div class="grid-item-inner">
+                    <p>
+                        <b>
+                        <%= data[index][12] %>
+                        </b>   
+                    </p>
+                    <p class="at_close">
+                        <%= data[index][13] %>
+                    </p>
+                </div>
+                <div class="grid-item-inner">
+                    <p class="volume-index">
+                        <b>
+                        <%= data[index][8] %>
+                        </b>   
+                    </p>
+                    <p>
+                        <%= data[index][9] %>
+                    </p>
+                </div>
+                <div class="grid-item-inner">
+                    <p>
+                        <b>
+                        <%= data[index][14] %>
+                        </b>   
+                    </p>
+                    <p class="at_close">
+                        <%= data[index][15] %>
+                    </p>
+                </div>
+            </div>  
+        </div>
+            
+    <%  }); %>
+    
+    <!--      Equities data           -->
+    
+    <% equities_data.forEach(function(ele, index){ %> 
+
+        <div class="grid-item card">
+            <div class="text-center mt-3">
+                <h3>
+                    <%= equities_data[index][0] %>
+                </h3>    
+                <p class="side-note">
+                    <%= equities_data[index][1] %>
+                </p>
+                <div> 
+                    <% if(equities_data[index][3] == "+"){ %>
+                        <h3 class="text-success"><%= equities_data[index][2] %></h3>
+                        <svg width="40" height="50">
+                            <polygon fill="green" stroke-width="2"
+                                points="05,30
+                                        15,10
+                                        25,30" />
+                        </svg>
+                        <h6 class="text-success"><%= equities_data[index][3] %></h6>
+                    <% } else { %> 
+                        <h3 class="text-danger"><%= equities_data[index][2] %></h3>
+                        <div class="triangle-down"></div>
+                        <h6 class="text-danger"><%= equities_data[index][3] %></h6>
+                    <% } %>
+                    <p class="at_close">
+                        <%= equities_data[index][4] %>
+                    </p>
+                </div>     
+            </div>
+            <div class="grid-container-inner-equity">
+                <div class="grid-item-inner-equity">
+                    <p class="previous-close">
+                        <b>
+                        <%= equities_data[index][5] %>
+                        </b>   
+                    </p>
+                    <p>
+                        <%= equities_data[index][6] %>
+                    </p>
+                </div>
+                <div class="grid-item-inner-equity">
+                    <p class="open">
+                        <b>
+                        <%= equities_data[index][7] %>
+                        </b>   
+                    </p>
+                    <p class="open-value-equity">
+                        <%= equities_data[index][8] %>
+                    </p>
+                </div>
+                <div class="grid-item-inner-equity">
+                    <p class="day-range range">
+                        <b>
+                        <%= equities_data[index][13] %>
+                        </b>   
+                    </p>
+                    <p>
+                        <%= equities_data[index][14] %>
+                    </p>
+                </div>
+                <div class="grid-item-inner-equity">
+                    <p class="bid">
+                        <b>
+                        <%= equities_data[index][9] %>
+                        </b>   
+                    </p>
+                    <p>
+                        <%= equities_data[index][10] %>
+                    </p>
+                </div>
+                <div class="grid-item-inner-equity">
+                    <p class="ask">
+                        <b>
+                        <%= equities_data[index][11] %>
+                        </b>   
+                    </p>
+                    <p>
+                        <%= equities_data[index][12] %>
+                    </p>
+                </div>
+                <div class="grid-item-inner-equity">
+                    <p class="52-day-range range">
+                        <b>
+                        <%= equities_data[index][15] %>
+                        </b>   
+                    </p>
+                    <p>
+                        <%= equities_data[index][16] %>
+                    </p>
+                </div>
+                <div class="grid-item-inner-equity">
+                    <p class="volume">
+                        <b>
+                        <%= equities_data[index][17] %>
+                        </b>   
+                    </p>
+                    <p class="volume-value">
+                        <%= equities_data[index][18] %>
+                    </p>
+                </div>
+                <div class="grid-item-inner-equity">
+                    <p class="avg-volume">
+                        <b>
+                        <%= equities_data[index][19] %>
+                        </b>   
+                    </p>
+                    <p class="avg-volume-value">
+                        <%= equities_data[index][20] %>
+                    </p>
+                </div>
+                <div class="grid-item-inner-equity">
+                    <p class="market-cap">
+                        <b>
+                        <%= equities_data[index][21] %>
+                        </b>   
+                    </p>
+                    <p>
+                        <%= equities_data[index][22] %>
+                    </p>
+                </div>
+            </div>  
+        </div>
+
+    <%  }); %>    
+</div>
+</div>
+<% if(Object.entries(marketdata).length > 0) { %>
+<div class="cover">      
+<div class="table-view table-wrapper-scroll-y my-custom-scrollbar">   
+    <table class="table table-bordered mb-0">
+        <tr>
+            <% marketdata.headers.forEach(function(head){ %>
+                <th>
+                    <%= head %>
+                </th>
+            <% }) %>
+                <th></th>
+        </tr>
+        
+            <% marketdata.data.forEach(function(index){ %>
+            <tr>
+                <%  index.forEach(function(data){ %>
+                    <td>
+                        <%= data %>
+                    </td>
+                <% }) %>
+                <td>
+                    <form action="/item" method="GET">
+                    <input type="hidden" value="<%= index[0] %>" name="name" />    
+                    <input type="submit" class="btn btn-info" id="<%= index[0] %>" value="Add to Watch" />
+                    </form>
+                </td>
+            </tr>
+            <% }) %>
+    </table>
+</div>
+</div>
+<% } %>
+</body>
+</html>

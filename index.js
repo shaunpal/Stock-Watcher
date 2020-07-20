@@ -1,0 +1,254 @@
+const axios = require('axios');
+const cheerio = require('cheerio');
+const express = require('express');
+const path = require('path');
+const bodyParser = require('body-parser');
+const router = express.Router();
+const ejs = require("ejs");
+require('dotenv').config();
+
+let market_indices = ['FTSE'];
+let equities = [];
+var market_indices_data = [];
+var equities_data = [];
+var rejectSearch = [];
+var duplicated = [];
+var marketdata = {};
+
+const app = express();
+app.use(express.static(__dirname + '/views'));
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }))
+ 
+// parse application/json
+app.use(bodyParser.json())
+
+router.get("/", async (req, res) => {
+    market_indices_data = await getStocks();
+    equities_data = await getEquityStock();
+
+    res.render('index', { data: market_indices_data, equities_data: equities_data,rejected: rejectSearch, duplicated: duplicated, indices: market_indices, marketdata: marketdata });
+
+    rejectSearch.pop();
+    duplicated.pop();
+    marketdata = {};
+})
+
+router.get("/search", async (req, res) => {
+    let query_stock = req.query.name.toUpperCase();
+    let checker = await checkStock(query_stock);
+    switch(checker){
+        case "Found":
+            if(market_indices.includes(query_stock)){
+                duplicated.push(query_stock);
+            }else {
+                market_indices.push(query_stock);
+            }
+            break;   
+        case "MoreSearch": 
+            marketdata = await lookupStock(query_stock);
+            break; 
+        case "NotFound": 
+            rejectSearch.push(query_stock);
+            break; 
+        default: 
+            rejectSearch.push(query_stock);
+            break; 
+    }
+    res.redirect("/");
+})
+
+router.get("/item", (req, res) => {
+    let item = req.query.name;
+    if(item[0] == "^"){
+        market_indices.push(item.substring(1));
+    }else {
+        equities.push(item);
+    }
+    res.redirect("/");
+})
+
+app.use('/', router);
+app.listen(process.env.PORT, () => {
+    console.log(`Running on port: ${process.env.PORT}`);
+})
+
+async function getStocks(){
+    let all = []
+    let filters = [
+        "No matching results for \'\'", 
+        "Tip: Try a valid symbol or a specific company name for relevant results", 
+        "Cancel", 
+        "Summary", 
+        "Statistics", 
+        "Historical data", 
+        "Profile", 
+        "Financials", 
+        "Analysis", 
+        "Options", 
+        "Holders", 
+        "Sustainability",
+        "Components"
+    ];
+    try {
+        for(let i=0; i<market_indices.length; i++){
+            let stockdetails = []
+            const { data } = await axios.get(
+                `https://sg.finance.yahoo.com/quote/%5E${market_indices[i]}?p=^${market_indices[i]}`);
+
+            const $ = cheerio.load(data);
+    
+            $('h1').each((_idx, el) => {
+                if($(el).text().search(`^${market_indices[i]}`) == 0){
+                    stockdetails.push($(el).text());
+                }
+            });
+
+            let counter = 4;
+            $('span').each((_idx, el) => {
+                if(filters.includes($(el).text())){
+                    
+                }
+                else {
+                    if(counter > 0){
+                        stockdetails.push($(el).text());
+                    }
+                    counter--;
+                }
+            });
+            $('td').each((_idx, el) => {
+                stockdetails.push($(el).text());
+              }  
+            );
+            all.push(stockdetails);
+        }
+        return all;
+    } catch (error) {
+        throw error;
+    }  
+}
+
+//To retrieve data for table lookup
+async function lookupStock(stock){
+    let contents = {
+        headers: [],
+        data: []
+    }
+    try {
+            const { data } = await axios.get(
+                `https://sg.finance.yahoo.com/lookup/all?s=${stock}`);
+
+            const $ = cheerio.load(data);
+    
+            $('th').each((_idx, el) => {
+                contents.headers.push($(el).text());
+            });
+            let all = [];
+            let counter = 6;
+            $('td').each((_idx, el) => {
+                all.push($(el).text());
+                counter--;
+                if(counter==0){
+                    contents.data.push(all);
+                    counter = 6;
+                    all = [];
+                }
+            });
+        return contents;
+    } catch (error) {
+        throw error;
+    }  
+}
+
+async function checkStock(stock){
+    isNotFound = false;
+    moreSearchRequired = false;
+    try {
+        const { data } = await axios.get(
+            `https://sg.finance.yahoo.com/quote/%5E${stock}?p=^${stock}`
+        );
+        const $ = cheerio.load(data);
+        // const postTitles = [];
+        let notFoundcondition1;
+        let notFoundcondition2;
+        $('span').each((_idx, el) => {
+            
+            notFoundcondition1 = $(el).text().search("N/A");
+            notFoundcondition2 = $(el).text().search("Symbols similar to");
+            if(notFoundcondition1 == 0){
+                isNotFound = true;
+            }
+            if(notFoundcondition2 == 0){
+                moreSearchRequired = true;
+            }
+        });
+        if(isNotFound == true){
+            return "NotFound";
+        }else if(moreSearchRequired == true){
+            return "MoreSearch";
+        }else {
+            return "Found";
+        }
+    } catch (error) {
+        throw error;
+    }
+}
+
+async function getEquityStock(){
+    let all = [];
+
+    //filters to ignore in web scraping
+    let filters = [
+        "No matching results for \'\'", 
+        "Tip: Try a valid symbol or a specific company name for relevant results", 
+        "Cancel", 
+        "Summary", 
+        "Statistics", 
+        "Historical data", 
+        "Profile", 
+        "Financials", 
+        "Analysis", 
+        "Options", 
+        "Holders", 
+        "Sustainability",
+        "Component"
+    ];
+    try {
+        for(let i=0; i<equities.length; i++){
+            let stockdetails = []
+            const { data } = await axios.get(
+                `https://sg.finance.yahoo.com/quote/${equities[i]}?p=${equities[i]}`);
+
+            const $ = cheerio.load(data);
+
+            $('h1').each((_idx, el) => {
+                if($(el).text().search(`${equities[i]}`) == 0){
+                    stockdetails.push($(el).text());
+                }
+            });
+            let counter =4;
+            $('span').each((_idx, el) => {
+                if(filters.includes($(el).text())){
+                    
+                }
+                else {
+                    if(counter > 0){
+                        stockdetails.push($(el).text());
+                    }
+                    counter--;
+                }
+              }  
+            );
+            $('td').each((_idx, el) => {
+                stockdetails.push($(el).text());
+              }  
+            );
+            all.push(stockdetails);
+        }
+        return all;
+    } catch (error) {
+        throw error;
+    }  
+}
