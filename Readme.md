@@ -10,5 +10,5 @@ Cheerio
 Axios
 Bootstrap
 
-
+To view the stock watcher app, visit https://stock-watcher-finance.herokuapp.com/
 
