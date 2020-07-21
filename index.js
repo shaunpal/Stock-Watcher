@@ -101,7 +101,8 @@ async function getStocks(){
             const $ = cheerio.load(data);
     
             $('h1').each((_idx, el) => {
-                if($(el).text().search(`^${market_indices[i]}`) == 0){
+                if($(el).text().search(`^${market_indices[i]} -`) == 0){
+                    console.log($(el).text());
                     stockdetails.push($(el).text());
                 }
             });

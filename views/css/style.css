@@ -78,7 +78,7 @@
     z-index: 4;
     position: absolute;
     overflow: scroll;
-    top: 15%;
+    top: 12%;
     left: 15%;
     border-color: black !important;
     border-width: 1px;
@@ -92,10 +92,37 @@ tr:nth-child(odd) {background-color: #ffffff;}
 
 
 /* For mobile view */
-@media (min-width: 200px) and (max-width: 600px) { 
+@media (min-width: 200px) and (max-width: 330px) { 
     .grid-container {
         display: block;
-        margin-left: 20%;
+        margin-left: 2%;
+    }
+
+    .table td:nth-child(3), .table th:nth-child(3), .table td:nth-child(4), .table th:nth-child(4), .table td:nth-child(6), .table th:nth-child(6) {
+        display: none;
+    }
+
+    .table {
+        font-size: x-small;
+    }
+}
+
+@media (min-width: 350px) and (max-width: 400px) { 
+    .grid-container {
+        display: block;
+        margin-left: 9%;
+    }
+
+    .table td:nth-child(3), .table th:nth-child(3), .table td:nth-child(4), .table th:nth-child(4), .table td:nth-child(6), .table th:nth-child(6) {
+        display: none;
+    }
+
+}
+
+@media (min-width: 405px) and (max-width: 440px) { 
+    .grid-container {
+        display: block;
+        margin-left: 12%;
     }
 
     .table td:nth-child(3), .table th:nth-child(3), .table td:nth-child(4), .table th:nth-child(4), .table td:nth-child(6), .table th:nth-child(6) {
@@ -103,9 +130,27 @@ tr:nth-child(odd) {background-color: #ffffff;}
     }
 }
 
-@media (min-width: 600px) and (max-width: 725px) { 
+@media (min-width: 450px) and (max-width: 608px) { 
+    .grid-container {
+        display: block;
+        margin-left: 21%;
+    }
+
+    .table td:nth-child(3), .table th:nth-child(3), .table td:nth-child(4), .table th:nth-child(4), .table td:nth-child(6), .table th:nth-child(6) {
+        display: none;
+    }
+}
+
+@media (min-width: 610px) and (max-width: 725px) { 
 
     .table td:nth-child(3), .table th:nth-child(3), .table td:nth-child(4), .table th:nth-child(4) {
         display: none;
     }
+}
+
+@media (min-width: 730px) and (max-width: 808px) { 
+    .grid-container {
+        margin-left: 5%;
+    }
+
 }
