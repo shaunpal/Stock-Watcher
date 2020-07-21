@@ -1,12 +1,7 @@
-.html {
-    min-width: 600px;
-}
-
-
 .grid-container {
     display: grid;
     grid-gap: 10px;
-    grid-template-columns: auto auto auto auto;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 }
 
 .grid-container-inner {
@@ -76,8 +71,8 @@
 }
 .table-view {
     text-align: center;
-    width: 900px;
-    height: 400px;
+    width: 75%;
+    height: 30%;
     margin-left: auto;
     margin-right: auto;
     z-index: 4;
@@ -94,34 +89,23 @@
 tr:nth-child(even) {background-color: #CCC;}
 tr:nth-child(odd) {background-color: #ffffff;}
 
-@media (max-width: 600px) { 
+
+
+/* For mobile view */
+@media (min-width: 200px) and (max-width: 600px) { 
     .grid-container {
-        display: grid;
-        grid-gap: 10px;
-        grid-template-columns: auto auto;
+        display: block;
+        margin-left: 19%;
+    }
+
+    .table td:nth-child(3), .table th:nth-child(3), .table td:nth-child(4), .table th:nth-child(4), .table td:nth-child(6), .table th:nth-child(6) {
+        display: none;
     }
 }
 
-@media (min-width: 600px) and (max-width: 991px) { 
-    .grid-container {
-        display: grid;
-        grid-gap: 10px;
-        grid-template-columns: auto auto;
-    }
-}
+@media (min-width: 600px) and (max-width: 725px) { 
 
-@media (min-width: 992px) and (max-width: 1199px) { 
-    .grid-container {
-        display: grid;
-        grid-gap: 10px;
-        grid-template-columns: auto auto auto;
-    }
-}
-
-@media (min-width: 1200px) { 
-    .grid-container {
-        display: grid;
-        grid-gap: 10px;
-        grid-template-columns: auto auto auto auto;
+    .table td:nth-child(3), .table th:nth-child(3), .table td:nth-child(4), .table th:nth-child(4) {
+        display: none;
     }
 }
