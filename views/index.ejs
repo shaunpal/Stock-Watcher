@@ -33,28 +33,28 @@
         <div class="grid-item card">
             <div class="text-center mt-3">
                 <h3>
-                    <%= ele %>
+                    <%= data[index][0] %>
                 </h3>    
                 <p class="side-note">
-                    <%= data[index][0] %>
+                    <%= data[index][1] %>
                 </p>
                 <div> 
-                    <% if(data[index][2][0] == "+"){ %>
-                        <h3 class="text-success"><%= data[index][1] %></h3>
+                    <% if(data[index][3][0] == "+"){ %>
+                        <h3 class="text-success"><%= data[index][2] %></h3>
                         <svg width="40" height="50">
                             <polygon fill="green" stroke-width="2"
                                 points="05,30
                                         15,10
                                         25,30" />
                         </svg>
-                        <h6 class="text-success"><%= data[index][2] %></h6>
+                        <h6 class="text-success"><%= data[index][3] %></h6>
                     <% } else { %> 
-                        <h3 class="text-danger"><%= data[index][1] %></h3>
+                        <h3 class="text-danger"><%= data[index][2] %></h3>
                         <div class="triangle-down"></div>
-                        <h6 class="text-danger"><%= data[index][2] %></h6>
+                        <h6 class="text-danger"><%= data[index][3] %></h6>
                     <% } %>
                     <p class="at_close">
-                        <%= data[index][3] %>
+                        <%= data[index][4] %>
                     </p>
                 </div>     
             </div>
@@ -62,61 +62,61 @@
                 <div class="grid-item-inner">
                     <p class="previous-close">
                         <b>
-                        <%= data[index][4] %>
+                        <%= data[index][5] %>
                         </b>   
                     </p>
                     <p>
-                        <%= data[index][5] %>
+                        <%= data[index][6] %>
                     </p>
                 </div>
                 <div class="grid-item-inner">
                     <p class="open">
                         <b>
-                        <%= data[index][6] %>
+                        <%= data[index][7] %>
                         </b>   
                     </p>
                     <p class="open-value">
-                        <%= data[index][7] %>
+                        <%= data[index][8] %>
                     </p>
                 </div>
                 <div class="grid-item-inner">
                     <p class="day-range">
                         <b>
-                        <%= data[index][10] %>
+                        <%= data[index][11] %>
                         </b>   
                     </p>
                     <p class="at_close">
-                        <%= data[index][11] %>
+                        <%= data[index][12] %>
                     </p>
                 </div>
                 <div class="grid-item-inner">
                     <p>
                         <b>
-                        <%= data[index][12] %>
+                        <%= data[index][13] %>
                         </b>   
                     </p>
                     <p class="at_close">
-                        <%= data[index][13] %>
+                        <%= data[index][14] %>
                     </p>
                 </div>
                 <div class="grid-item-inner">
                     <p class="volume-index">
                         <b>
-                        <%= data[index][8] %>
+                        <%= data[index][9] %>
                         </b>   
                     </p>
                     <p class="at_close">
-                        <%= data[index][9] %>
+                        <%= data[index][10] %>
                     </p>
                 </div>
                 <div class="grid-item-inner">
                     <p>
                         <b>
-                        <%= data[index][14] %>
+                        <%= data[index][15] %>
                         </b>   
                     </p>
                     <p class="at_close">
-                        <%= data[index][15] %>
+                        <%= data[index][16] %>
                     </p>
                 </div>
             </div>  

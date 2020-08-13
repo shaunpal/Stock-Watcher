@@ -28,7 +28,6 @@ app.use(bodyParser.json())
 router.get("/", async (req, res) => {
     market_indices_data = await getStocks();
     equities_data = await getEquityStock();
-
     res.render('index', { data: market_indices_data, equities_data: equities_data,rejected: rejectSearch, duplicated: duplicated, indices: market_indices, marketdata: marketdata });
 
     rejectSearch.pop();
@@ -80,7 +79,8 @@ async function getStocks(){
     let filters = [
         "No matching results for \'\'", 
         "Tip: Try a valid symbol or a specific company name for relevant results", 
-        "Cancel", 
+        "Cancel",
+        "Add to watchlist", 
         "Summary", 
         "Statistics", 
         "Historical data", 
@@ -100,17 +100,13 @@ async function getStocks(){
 
             const $ = cheerio.load(data);
     
-            $('h1').each((_idx, el) => {
-                if($(el).text().search(`^${market_indices[i]} -`) == 0){
-                    console.log($(el).text());
-                    stockdetails.push($(el).text());
-                }
+            $('div#quote-header-info').find('h1', 'data-reactid').each((_idx, el) => {
+                stockdetails.push($(el).text());
             });
 
             let counter = 4;
-            $('span').each((_idx, el) => {
+            $('div#quote-header-info').find('span', 'data-reactid').each((_idx, el) => {
                 if(filters.includes($(el).text())){
-                    
                 }
                 else {
                     if(counter > 0){
@@ -119,7 +115,7 @@ async function getStocks(){
                     counter--;
                 }
             });
-            $('td').each((_idx, el) => {
+            $('div#quote-summary').find('td', 'data-reactid').each((_idx, el) => {
                 stockdetails.push($(el).text());
               }  
             );
@@ -214,7 +210,8 @@ async function getEquityStock(){
         "Options", 
         "Holders", 
         "Sustainability",
-        "Component"
+        "Component",
+        "Add to watchlist"
     ];
     try {
         for(let i=0; i<equities.length; i++){
@@ -224,13 +221,12 @@ async function getEquityStock(){
 
             const $ = cheerio.load(data);
 
-            $('h1').each((_idx, el) => {
-                if($(el).text().search(`${equities[i]}`) == 0){
-                    stockdetails.push($(el).text());
-                }
+            $('div#quote-header-info').find('h1', 'data-reactid').each((_idx, el) => {
+                stockdetails.push($(el).text());
+                
             });
             let counter =4;
-            $('span').each((_idx, el) => {
+            $('div#quote-header-info').find('span', 'data-reactid').each((_idx, el) => {
                 if(filters.includes($(el).text())){
                     
                 }
@@ -242,7 +238,7 @@ async function getEquityStock(){
                 }
               }  
             );
-            $('td').each((_idx, el) => {
+            $('div#quote-summary').find('td', 'data-reactid').each((_idx, el) => {
                 stockdetails.push($(el).text());
               }  
             );
