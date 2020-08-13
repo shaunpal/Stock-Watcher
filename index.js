@@ -90,7 +90,8 @@ async function getStocks(){
         "Options", 
         "Holders", 
         "Sustainability",
-        "Components"
+        "Components",
+        "Add to watchlist"
     ];
     try {
         for(let i=0; i<market_indices.length; i++){
@@ -167,7 +168,7 @@ async function checkStock(stock){
             `https://sg.finance.yahoo.com/quote/%5E${stock}?p=^${stock}`
         );
         const $ = cheerio.load(data);
-        // const postTitles = [];
+
         let notFoundcondition1;
         let notFoundcondition2;
         $('span').each((_idx, el) => {
