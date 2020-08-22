@@ -41,12 +41,7 @@
                 <div> 
                     <% if(data[index][3][0] == "+"){ %>
                         <h3 class="text-success"><%= data[index][2] %></h3>
-                        <svg width="40" height="50">
-                            <polygon fill="green" stroke-width="2"
-                                points="05,30
-                                        15,10
-                                        25,30" />
-                        </svg>
+                        <div class="triangle-up"></div>
                         <h6 class="text-success"><%= data[index][3] %></h6>
                     <% } else { %> 
                         <h3 class="text-danger"><%= data[index][2] %></h3>
@@ -137,7 +132,7 @@
                     <%= equities_data[index][1] %>
                 </p>
                 <div> 
-                    <% if(equities_data[index][3][0] == "+"){ %>
+                    <% if(equities_data[index][3].includes("+")){ %>
                         <h3 class="text-success"><%= equities_data[index][2] %></h3>
                         <svg width="40" height="50">
                             <polygon fill="green" stroke-width="2"
@@ -253,8 +248,11 @@
     <%  }); %>    
 </div>
 </div>
-<% if(Object.entries(marketdata).length > 0) { %>
-<div class="cover">      
+<% if(Object.entries(marketdata).length > 0 && marketdata.data.length > 0) { %>
+<div class="cover">
+<form action="/" method="GET">
+    <Button type="submit" class="close-btn">Close</Button>
+</form>           
 <div class="table-view table-wrapper-scroll-y my-custom-scrollbar">   
     <table class="table table-bordered mb-0">
         <tr>
@@ -275,8 +273,8 @@
                 <% }) %>
                 <td>
                     <form action="/item" method="GET">
-                    <input type="hidden" value="<%= index[0] %>" name="name" />    
-                    <input type="submit" class="btn btn-info" id="<%= index[0] %>" value="Add to Watch" />
+                        <input type="hidden" value="<%= index[0] %>" name="name" />  
+                        <input type="submit" class="btn btn-info" id="<%= index[0] %>" value="Add to Watch" />
                     </form>
                 </td>
             </tr>

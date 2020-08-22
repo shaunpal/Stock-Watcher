@@ -4,11 +4,12 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const router = express.Router();
+const cors = require('cors')
 const ejs = require("ejs");
 require('dotenv').config();
 
-let market_indices = ['FTSE'];
-let equities = [];
+var market_indices = ['FTSE'];
+var equities = [];
 var market_indices_data = [];
 var equities_data = [];
 var rejectSearch = [];
@@ -24,20 +25,28 @@ app.use(bodyParser.urlencoded({ extended: false }))
  
 // parse application/json
 app.use(bodyParser.json())
+app.use(cors())
+
 
 router.get("/", async (req, res) => {
-    market_indices_data = await getStocks();
-    equities_data = await getEquityStock();
-    res.render('index', { data: market_indices_data, equities_data: equities_data,rejected: rejectSearch, duplicated: duplicated, indices: market_indices, marketdata: marketdata });
+    try {
+        market_indices_data = await getStocks();
+        equities_data = await getEquityStock();
+    }catch(err){
+        console.log("Error: at router('/')"+err)
+    }finally {
+        res.render('index', { data: market_indices_data, equities_data: equities_data,rejected: rejectSearch, duplicated: duplicated, indices: market_indices, marketdata: marketdata });
 
-    rejectSearch.pop();
-    duplicated.pop();
-    marketdata = {};
+        rejectSearch.pop();
+        duplicated.pop();
+        marketdata = {};
+    }
 })
 
 router.get("/search", async (req, res) => {
     let query_stock = req.query.name.toUpperCase();
-    let checker = await checkStock(query_stock);
+    try {
+        let checker = await checkStock(query_stock);
     switch(checker){
         case "Found":
             if(market_indices.includes(query_stock)){
@@ -48,6 +57,9 @@ router.get("/search", async (req, res) => {
             break;   
         case "MoreSearch": 
             marketdata = await lookupStock(query_stock);
+            if(marketdata.headers.length == 0){
+                rejectSearch.push(query_stock);
+            }
             break; 
         case "NotFound": 
             rejectSearch.push(query_stock);
@@ -56,17 +68,34 @@ router.get("/search", async (req, res) => {
             rejectSearch.push(query_stock);
             break; 
     }
-    res.redirect("/");
+    }catch(err){
+        console.log("Error: at router('/search')"+err)
+    }finally{
+        res.redirect("/");
+    }
 })
 
 router.get("/item", (req, res) => {
-    let item = req.query.name;
-    if(item[0] == "^"){
-        market_indices.push(item.substring(1));
-    }else {
-        equities.push(item);
+    try {
+        let item = req.query.name;
+        if(item[0] == "^"){
+            if(market_indices.includes(item.substring(1))){
+                duplicated.push(item.substring(1))
+            }else {
+                market_indices.push(item.substring(1));
+            }
+        }else {
+            if(equities.includes(item)){
+                duplicated.push(item)
+            }else {
+                equities.push(item);
+            } 
+        }
+    }catch(err){
+        console.log("Error: at router('/item')"+err)
+    }finally {
+        res.redirect("/");
     }
-    res.redirect("/");
 })
 
 app.use('/', router);
@@ -224,7 +253,6 @@ async function getEquityStock(){
 
             $('div#quote-header-info').find('h1', 'data-reactid').each((_idx, el) => {
                 stockdetails.push($(el).text());
-                
             });
             let counter =4;
             $('div#quote-header-info').find('span', 'data-reactid').each((_idx, el) => {
